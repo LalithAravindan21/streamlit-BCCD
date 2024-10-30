@@ -81,11 +81,6 @@ if r.status_code == 200:
         # Display the image
         st.image(image, use_column_width=True)
         
-        # Convert to JPEG Buffer for JSON retrieval
-        buffered = io.BytesIO()
-        image.save(buffered, quality=90, format='JPEG')
-        img_str = base64.b64encode(buffered.getvalue()).decode('ascii')
-        
         ## Construct the URL to retrieve JSON.
         json_url = ''.join([
             'https://infer.roboflow.com/rf_U1BBNbuxDkXLZ5kZwnJh56P9gK82',
@@ -97,30 +92,34 @@ if r.status_code == 200:
             'Content-Type': 'application/x-www-form-urlencoded'
         })
         
-        ## Save the JSON.
-        output_dict = r_json.json()
-        
-        ## Generate list of confidences.
-        confidences = [box['confidence'] for box in output_dict['predictions']]
-        
-        ## Summary statistics section in main app.
-        st.write('### Summary Statistics')
-        st.write(f'Number of Bounding Boxes (ignoring overlap thresholds): {len(confidences)}')
-        st.write(f'Average Confidence Level of Bounding Boxes: {np.round(np.mean(confidences), 4)}')
+        # Check JSON response status
+        if r_json.status_code == 200:
+            ## Save the JSON.
+            output_dict = r_json.json()
+            
+            ## Generate list of confidences.
+            confidences = [box['confidence'] for box in output_dict['predictions']]
+            
+            ## Summary statistics section in main app.
+            st.write('### Summary Statistics')
+            st.write(f'Number of Bounding Boxes (ignoring overlap thresholds): {len(confidences)}')
+            st.write(f'Average Confidence Level of Bounding Boxes: {np.round(np.mean(confidences), 4)}')
 
-        ## Histogram in main app.
-        st.write('### Histogram of Confidence Levels')
-        fig, ax = plt.subplots()
-        ax.hist(confidences, bins=10, range=(0.0, 1.0))
-        st.pyplot(fig)
+            ## Histogram in main app.
+            st.write('### Histogram of Confidence Levels')
+            fig, ax = plt.subplots()
+            ax.hist(confidences, bins=10, range=(0.0, 1.0))
+            st.pyplot(fig)
 
-        ## Display the JSON in main app.
-        st.write('### JSON Output')
-        st.write(output_dict)
-        
+            ## Display the JSON in main app.
+            st.write('### JSON Output')
+            st.write(output_dict)
+        else:
+            st.error("Failed to retrieve JSON output.")
+            st.write(r_json.json())  # Display any error messages from the API
+            
     except Exception as e:
         st.error(f"Error opening image: {e}")
 else:
     st.error("Failed to retrieve the image.")
-    response_json = r.json()
-    st.write(response_json)  # Display any error messages from the API
+    st.write(r.json())  # Display any error messages from the API
