@@ -76,7 +76,7 @@ r = requests.post(upload_url,
 if r.status_code == 200:
     try:
         # Try to open the image from the response content
-        image = Image.open(BytesIO(r.content))
+        image = Image.open(io.BytesIO(r.content))
         
         # Display the image
         st.image(image, use_column_width=True)
@@ -120,6 +120,8 @@ if r.status_code == 200:
             
     except Exception as e:
         st.error(f"Error opening image: {e}")
+        st.write("Response content:", r.content)  # Display the raw response content for debugging
 else:
     st.error("Failed to retrieve the image.")
-    st.write(r.json())  # Display any error messages from the API
+    st.write(f"Response code: {r.status_code}")  # Display the status code for debugging
+    st.write("Response content:", r.content)  # Display the raw response content for debugging
