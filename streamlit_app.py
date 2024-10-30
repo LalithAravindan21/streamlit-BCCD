@@ -65,7 +65,7 @@ img_str = img_str.decode('ascii')
 
 ## Construct the URL to retrieve image.
 upload_url = ''.join([
-    'https://infer.roboflow.com/qyRJgNeK0gsqxx3PiEeP',
+    'https://infer.roboflow.com/rf_U1BBNbuxDkXLZ5kZwnJh56P9gK82',
     f'?access_token={st.secrets["access_token"]}',
     '&format=image',
     f'&overlap={overlap_threshold * 100}',
@@ -93,7 +93,7 @@ st.image(image,
 
 ## Construct the URL to retrieve JSON.
 upload_url = ''.join([
-    'https://infer.roboflow.com/qyRJgNeK0gsqxx3PiEeP',
+    'https://infer.roboflow.com/rf_U1BBNbuxDkXLZ5kZwnJh56P9gK82',
     f'?access_token={st.secrets["access_token"]}'
 ])
 
