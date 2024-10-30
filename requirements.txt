@@ -1,0 +1,6 @@
+###### Requirements ######
+streamlit==1.11.1
+requests
+pillow
+numpy==1.22.0
+matplotlib==3.3.2
